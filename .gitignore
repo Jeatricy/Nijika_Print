@@ -1,0 +1,32 @@
+# Local environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Build artifacts / release binaries do not belong in source control
+build/
+dist/
+release/
+.release-work/
+*.exe
+*.dll
+*.pdb
+*.ico
+*.log
+*.zip
+*.7z
+*.tmp
+
+# Credentials and local settings
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

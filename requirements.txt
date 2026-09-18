@@ -1,0 +1,4 @@
+pywebview>=6.0,<7
+pywin32>=306; sys_platform == "win32"
+PyMuPDF>=1.24,<2
+pypinyin>=0.50,<1

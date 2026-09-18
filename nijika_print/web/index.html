@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nijika Print</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app-window">
+  <header class="titlebar">
+    <div class="titlebar-drag pywebview-drag-region"><span data-icon="printer"></span><span>Nijika Print</span><span class="titlebar-separator"></span><span class="titlebar-version">v1.0</span></div>
+    <div class="window-controls">
+      <button data-action="minimize" aria-label="最小化" title="最小化"><span data-icon="minus"></span></button>
+      <button data-action="maximize" aria-label="最大化或还原" title="最大化 / 还原"><span data-icon="maximize"></span></button>
+      <button data-action="close" class="window-close" aria-label="关闭" title="关闭"><span data-icon="close"></span></button>
+    </div>
+  </header>
+  <main class="app-main">
+
+    <div class="workspace">
+      <div class="left-column">
+        <section class="workspace-toolbar" aria-label="文件工具栏">
+          <button class="button" data-action="folder"><span data-icon="folder-plus"></span>选择文件夹</button>
+          <div class="folder-location"><span id="folder-name">还没有选择文件夹</span><span id="folder-path">或将文件夹拖入下方文件区</span></div>
+          <div class="search-box"><span data-icon="search"></span><input id="filter-input" type="text" placeholder="筛选文件名或类型…" aria-label="筛选文件名或类型" autocomplete="off"><button data-action="clear-filter" class="small-icon" aria-label="清除筛选" title="清除筛选"><span data-icon="close"></span></button></div>
+          <button class="button button-soft" data-action="filter">筛选</button><button class="button icon-button" data-action="refresh-source" title="刷新文件列表" aria-label="刷新文件列表"><span data-icon="refresh"></span></button>
+        </section>
+      <section class="panel source-panel" id="source-drop" aria-label="文件来源">
+        <header class="panel-header"><div class="section-title"><span data-icon="folder"></span><h2>文件来源</h2></div><span class="subtle-count" id="source-count">尚未选择文件夹</span></header>
+        <div class="source-table-head"><button class="sort-button" data-action="sort">文件名称 <span id="sort-icon" data-icon="arrow-up"></span></button><span>类型</span></div>
+        <div class="source-scroll" id="source-scroll" role="tree" aria-label="源文件列表"><div id="source-tree"></div></div>
+        <div class="empty-state source-empty" id="source-empty">
+          <div class="empty-art"><svg viewBox="0 0 112 90" aria-hidden="true"><path d="M21 28V17a5 5 0 0 1 5-5h21l9 10h27a5 5 0 0 1 5 5v43H21" fill="#eeece5" stroke="#d9d6cc"/><rect x="30" y="19" width="44" height="50" rx="5" fill="#fffefa" stroke="#d7d3c8" transform="rotate(8 52 44)"/><path d="M42 35h20m-20 9h23m-23 9h15" stroke="#d0ccc1" stroke-width="2" stroke-linecap="round"/><path d="M15 34a5 5 0 0 1 5-5h69a5 5 0 0 1 5 6l-7 38a6 6 0 0 1-6 5H26a6 6 0 0 1-6-5z" fill="#f7f5ef" stroke="#cecabe"/><circle cx="87" cy="24" r="13" fill="#f1e2d7"/><path d="M87 19v10m-5-5h10" stroke="#bc7657" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+          <p id="source-empty-copy">选择或拖入文件夹</p><button class="button" id="source-empty-button" data-action="folder"><span data-icon="folder-plus"></span>选择文件夹</button><span class="empty-shortcut"><kbd>Ctrl</kbd> + <kbd>O</kbd></span>
+        </div>
+        <footer class="source-footer"><div><button class="text-button" data-action="select-all-source" id="select-all-source">全选可打印文件</button><p id="source-selected">已勾选 0 项</p></div><button class="button button-soft" data-action="add-checked">加入队列<span data-icon="arrow-right"></span></button></footer>
+        <div class="drop-overlay"><span data-icon="folder-plus"></span><strong>松开，打开这个文件夹</strong></div>
+      </section>
+      </div>
+      <div class="right-column">
+        <section class="settings-panel" aria-label="打印设置">
+          <header class="panel-header settings-header">
+            <div class="section-title"><span data-icon="sliders"></span><h2>打印设置</h2></div>
+            <div class="printer-field"><div id="printer-select" class="custom-select" aria-label="选择打印机"></div><button class="button icon-button" data-action="refresh-printers" title="刷新打印机" aria-label="刷新打印机"><span data-icon="refresh"></span></button></div>
+          </header>
+          <div class="settings-grid">
+            <div class="field color-field"><span class="field-label">色彩</span><span class="segmented-control" role="group" aria-label="色彩模式"><button class="active" data-color="true" aria-pressed="true">彩色</button><button data-color="false" aria-pressed="false">黑白</button></span></div>
+            <div class="field duplex-field"><span class="field-label">单双面</span><div id="duplex-select" class="custom-select" aria-label="单双面"></div></div>
+            <label class="field nup-field"><span class="field-label">PDF 每张</span><span class="stepper"><button data-action="nup-minus" aria-label="减少每张页数"><span data-icon="minus"></span></button><input id="nup-input" inputmode="numeric" type="text" value="1" maxlength="2" aria-label="PDF 每张页数"><button data-action="nup-plus" aria-label="增加每张页数"><span data-icon="plus"></span></button></span></label>
+          </div>
+          <div class="settings-grid settings-last">
+            <div class="field layout-field"><span class="field-label">拼版</span><div id="layout-select" class="custom-select" aria-label="拼版布局"></div></div>
+            <div class="field office-field"><span class="field-label" title="Excel 转 PDF">Excel</span><div id="office-select" class="custom-select" aria-label="Excel 转 PDF"></div></div>
+          </div>
+        </section>
+        <section class="panel queue-panel" id="queue-drop" aria-label="待打印队列">
+          <header class="panel-header"><div class="section-title"><h2>待打印队列</h2><span class="count-badge" id="queue-count">0</span></div><button class="button button-small" data-action="files"><span data-icon="plus"></span>添加文件</button></header>
+          <div class="queue-hint"><span>按列表顺序打印</span><span>双击移除 · Ctrl / Shift 多选</span></div>
+          <div class="queue-scroll" id="queue-scroll" tabindex="0" role="listbox" aria-multiselectable="true" aria-label="待打印文件"><div id="queue-list"></div></div>
+          <div class="empty-state queue-empty" id="queue-empty"><div class="queue-empty-art"><span data-icon="documents"></span><span class="little-plus" data-icon="plus"></span></div><p>拖入文件或文件夹，也可双击左侧文件添加</p><span class="supported-types">PDF<span>·</span>Office<span>·</span>图片</span></div>
+          <div class="queue-selection" id="queue-selection">勾选与高亮可独立调整顺序</div>
+          <footer class="queue-footer"><div class="order-group"><span>勾选</span><button class="small-icon" data-action="checked-up" title="上移勾选文件" aria-label="上移勾选文件"><span data-icon="arrow-up"></span></button><button class="small-icon" data-action="checked-down" title="下移勾选文件" aria-label="下移勾选文件"><span data-icon="arrow-down"></span></button></div><div class="order-group"><span>高亮</span><button class="small-icon" data-action="selected-up" title="上移高亮文件" aria-label="上移高亮文件"><span data-icon="arrow-up"></span></button><button class="small-icon" data-action="selected-down" title="下移高亮文件" aria-label="下移高亮文件"><span data-icon="arrow-down"></span></button></div><span class="flex-spacer"></span><button class="text-button remove-button" data-action="remove"><span data-icon="trash"></span>移除</button><button class="text-button" data-action="clear-queue">清空</button></footer>
+          <div class="drop-overlay"><span data-icon="plus"></span><strong>松开，加入打印队列</strong></div>
+        </section>
+      </div>
+    </div>
+    <footer class="app-footer"><div class="progress-track" id="progress-track"><div id="progress-fill"></div></div><div class="status-block"><div class="status-line"><i id="status-dot"></i><span id="status-text">正在连接本地打印引擎…</span></div><p id="status-detail">所有文件均在本机处理</p></div><div class="print-actions"><span class="print-shortcut"><kbd>Ctrl</kbd><span>+</span><kbd>Enter</kbd></span><button class="button cancel-print" data-action="cancel-print" id="cancel-print" disabled>取消打印</button><button class="button button-primary print-button" data-action="print" id="print-button"><span data-icon="printer"></span><span id="print-label">开始打印</span><span class="button-key">↵</span></button></div></footer>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"><span data-icon="check"></span><span id="toast-text"></span></div>
+<dialog id="app-dialog"><button class="dialog-close small-icon" id="dialog-close" aria-label="关闭对话框"><span data-icon="close"></span></button><div class="dialog-content"><div class="dialog-symbol" id="dialog-symbol"></div><h2 id="dialog-title"></h2><div id="dialog-body"></div></div><div class="dialog-actions"><button class="button" id="dialog-cancel">取消</button><button class="button button-primary" id="dialog-accept">知道了</button></div></dialog>
+<script src="icons.js"></script><script src="app.js"></script>
+</body>
+</html>
+
+
+
