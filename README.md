@@ -1,12 +1,12 @@
 # Nijika Print
 
-**1.0.0 · Windows 本地批量打印桌面应用**
+**1.0.1 · Windows 本地批量打印桌面应用**
 
 基于 WebView2 的独立桌面窗口。文件在本机处理，不需要打开网站。
 
 ## 下载与运行
 
-从 GitHub Releases 下载 `Nijika_Print-1.0.0-windows-x64.exe`，双击运行。
+从 GitHub Releases 下载 `Nijika_Print-1.0.1-windows-x64.exe`，双击运行。
 
 - Windows 10/11 x64，需安装 Microsoft Edge WebView2 Runtime。
 - Release 为单文件程序，包含 Python 运行组件和 SumatraPDF 3.6.1；首次启动会解压运行资源到临时目录。
@@ -35,7 +35,7 @@ python -m pip install -r requirements.txt
 python -m nijika_print
 ```
 
-源码仓库不包含 EXE、图标文件、旧版本、批处理启动脚本或测试样例。打印引擎已集成在 `nijika_print/engine.py`，不依赖任何旧版源码。
+源码仓库不包含 EXE、旧版本、批处理启动脚本或测试样例；根目录的 `icon.ico` 是正式应用图标，用于 EXE、任务栏和标题栏。打印引擎已集成在 `nijika_print/engine.py`，不依赖任何旧版源码。
 
 源码运行时需要单独安装 SumatraPDF。程序会从常见安装目录和 PATH 查找，也可以指定：
 
@@ -55,6 +55,7 @@ nijika_print/
   backend.py        文件、打印队列和任务状态
   engine.py         独立打印引擎
   branding.py       名称与版本
+  resources.py      应用图标资源定位
   web/              随程序提供的界面源码
 packaging/
   version_info.txt  Windows 文件版本元数据
@@ -71,7 +72,7 @@ $env:NIJIKA_SUMATRA_BUILD_PATH = 'C:\Program Files\SumatraPDF\SumatraPDF.exe'
 python -m PyInstaller --noconfirm Nijika_Print.spec
 ```
 
-产物：`dist/Nijika_Print-1.0.0-windows-x64.exe`。
+产物：`dist/Nijika_Print-1.0.1-windows-x64.exe`。
 
 可在不创建窗口、不提交打印的情况下运行依赖和 PDF 拼版诊断：
 
@@ -83,6 +84,7 @@ python -m nijika_print --diagnose "$env:TEMP\nijika-diagnostics.json"
 
 ## 版本与第三方组件
 
-1.0.0 是整理后的首个正式版本，包含当前最新版界面。详见 `CHANGELOG.md` 和 `THIRD_PARTY_NOTICES.md`。
+1.0.1 是图标修正版，统一使用根目录 `icon.ico`，其余界面和打印功能保持不变。详见 `CHANGELOG.md` 和 `THIRD_PARTY_NOTICES.md`。
 
-本仓库当前为私有仓库，未额外指定项目代码的开源许可。第三方组件保留其各自许可及权利声明。
+本仓库为公开仓库，未额外指定项目代码的开源许可。第三方组件保留其各自许可及权利声明。
+

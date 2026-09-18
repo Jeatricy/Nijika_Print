@@ -7,6 +7,7 @@ import stat
 import threading
 import uuid
 from .engine import PrintEngine
+from .resources import app_icon_data_url
 from . import engine as printing
 
 
@@ -57,7 +58,7 @@ class DesktopAPI:
 
     def bootstrap(self):
         with self._lock:
-            return {"queue": self._queue_snapshot(), "printers": self.get_printers(),
+            return {"app_icon": app_icon_data_url(), "queue": self._queue_snapshot(), "printers": self.get_printers(),
                     "capabilities": {"printing": self._engine.win32_ok, "pdf": self._engine.have_fitz,
                                      "sumatra": bool(self._engine.sumatra_path)}, "root": self._root, "job": dict(self._job)}
 
@@ -299,4 +300,5 @@ class DesktopAPI:
                 self._window.evaluate_js("window.desktop.requestClose()")
             return False
         return True
+
 

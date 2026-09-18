@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-"""Source-only build configuration for the standalone Nijika Print 1.0 release."""
+"""Source-only build configuration for the standalone Nijika Print release."""
 import os
 from pathlib import Path
 from PyInstaller.utils.hooks import collect_data_files, copy_metadata
@@ -8,6 +8,10 @@ ROOT = Path(SPECPATH).resolve()
 sumatra = Path(os.environ.get("NIJIKA_SUMATRA_BUILD_PATH", ""))
 if not sumatra.is_file():
     raise SystemExit("Set NIJIKA_SUMATRA_BUILD_PATH to an external SumatraPDF 3.6.1 executable before building.")
+
+icon = ROOT / "icon.ico"
+if not icon.is_file():
+    raise SystemExit("The root icon.ico is required to build the desktop app.")
 
 metadata = []
 for distribution in ("pywebview", "pythonnet", "clr_loader", "PyMuPDF", "pywin32", "pypinyin"):
@@ -20,6 +24,7 @@ a = Analysis(
     datas=[
         (str(ROOT / "nijika_print" / "web"), "nijika_print/web"),
         (str(sumatra), "."),
+        (str(icon), "."),
         (str(ROOT / "THIRD_PARTY_NOTICES.md"), "."),
     ] + collect_data_files("webview") + metadata,
     hiddenimports=["webview.platforms.edgechromium", "webview.platforms.winforms"],
@@ -37,10 +42,11 @@ a = Analysis(
 pyz = PYZ(a.pure)
 exe = EXE(
     pyz, a.scripts, a.binaries, a.datas, [],
-    name="Nijika_Print-1.0.0-windows-x64",
+    name="Nijika_Print-1.0.1-windows-x64",
     debug=False, bootloader_ignore_signals=False,
     strip=False, upx=False, console=False,
     disable_windowed_traceback=False,
-    icon="NONE",
+    icon=str(icon),
     version=str(ROOT / "packaging" / "version_info.txt"),
 )
+

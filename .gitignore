@@ -17,6 +17,7 @@ release/
 *.dll
 *.pdb
 *.ico
+!/icon.ico
 *.log
 *.zip
 *.7z
@@ -30,3 +31,4 @@ release/
 .idea/
 Thumbs.db
 .DS_Store
+

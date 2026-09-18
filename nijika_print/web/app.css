@@ -96,3 +96,6 @@
   .left-column > .workspace-toolbar { padding: 9px 10px; gap: 6px 7px; }
   .settings-panel .settings-grid { column-gap: 10px; }
 }
+
+/* Use the same supplied icon in the custom title bar as in the Windows shell. */
+.titlebar-drag > .app-icon { width: 16px; height: 16px; flex: 0 0 16px; object-fit: contain; }

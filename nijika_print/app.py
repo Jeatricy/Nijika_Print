@@ -1,7 +1,8 @@
-"""Desktop window and native integration for Nijika Print 1.0."""
+"""Desktop window and native integration for Nijika Print."""
 from __future__ import annotations
 import ctypes
 import importlib
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -13,11 +14,20 @@ import webview
 from webview.dom import DOMEventHandler
 from .backend import DesktopAPI
 from .branding import APP_NAME, APP_VERSION
+from .resources import app_icon_path
 
 WEB_ROOT = Path(__file__).resolve().parent / "web"
 
 
 def run():
+    if sys.platform == "win32":
+        try:
+            set_app_id = ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID
+            set_app_id.argtypes = [ctypes.c_wchar_p]
+            set_app_id.restype = ctypes.c_long
+            set_app_id("Nijika.Print.Desktop")
+        except (AttributeError, OSError):
+            pass
     api = DesktopAPI()
     webview.settings["SHOW_DEFAULT_MENUS"] = False
     webview.settings["ALLOW_DOWNLOADS"] = False
@@ -50,7 +60,9 @@ def run():
             window.dom.get_element(selector).on("drop", DOMEventHandler(on_drop(target), prevent_default=True, stop_propagation=True))
 
     window.events.loaded += on_loaded
-    webview.start(gui="edgechromium", debug=False, private_mode=True)
+    icon = app_icon_path()
+    webview.start(gui="edgechromium", debug=False, private_mode=True,
+                  icon=str(icon) if icon.is_file() else None)
 
 
 def diagnose(output):
@@ -75,6 +87,9 @@ def diagnose(output):
                 check = printing.fitz.open(dst)
                 result["pdf_nup"] = check.page_count == 1
                 check.close()
+    icon = app_icon_path()
+    result["app_icon"] = icon.is_file()
+    result["app_icon_sha256"] = hashlib.sha256(icon.read_bytes()).hexdigest() if icon.is_file() else None
     result["webview_backend"] = False
     try:
         importlib.import_module("webview.platforms.edgechromium")
@@ -82,7 +97,7 @@ def diagnose(output):
         result["webview_backend"] = True
     except Exception as exc:
         result["webview_error"] = str(exc)
-    result["ok"] = result["webview_backend"] and result["win32"] and result["pdf"] and result["web_assets"] and result["pdf_nup"] and not result["tk_loaded"]
+    result["ok"] = result["app_icon"] and result["webview_backend"] and result["win32"] and result["pdf"] and result["web_assets"] and result["pdf_nup"] and not result["tk_loaded"]
     Path(output).write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     return 0 if result["ok"] else 1
 
@@ -100,4 +115,5 @@ def main():
         if sys.platform == "win32":
             ctypes.windll.user32.MessageBoxW(None, f"无法启动 {APP_NAME} {APP_VERSION}。请检查 WebView2 运行时和应用依赖。\n\n错误详情：{log}", f"{APP_NAME} · 启动失败", 0x10)
         raise
+
 

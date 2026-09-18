@@ -79,9 +79,10 @@ window.desktop={
  onNativeDrop:async(target,result)=>{document.querySelectorAll('.drop-active').forEach(el=>el.classList.remove('drop-active'));if(result.error){toast(result.error);return}if(target==='source')await loadRoot(result.root,true);else{queueSnapshot(result);toast(`已添加 ${result.added} 个文件${result.skipped?'，跳过 '+result.skipped+' 个':''}`)}},
  reportError:message=>showError(Error(message))
 };
-async function initialize(){if(state.ready)return;state.ready=true;try{const boot=await call('bootstrap');queueSnapshot(boot.queue);setPrinters(boot.printers);if(boot.root)await loadRoot(boot.root);$('status-text').textContent='准备就绪';renderJob(boot.job);setInterval(async()=>{if(polling)return;polling=true;try{const job=await call('poll_job');if(job.id)renderJob(job)}catch(error){console.error(error)}finally{polling=false}},450)}catch(error){state.ready=false;$('status-text').textContent='本地引擎连接失败';await showError(error)}}
+async function initialize(){if(state.ready)return;state.ready=true;try{const boot=await call('bootstrap');const appIcon=app-icon;if(boot.app_icon){appIcon.onload=()=>appIcon.classList.remove('hidden');appIcon.src=boot.app_icon;}queueSnapshot(boot.queue);setPrinters(boot.printers);if(boot.root)await loadRoot(boot.root);$('status-text').textContent='准备就绪';renderJob(boot.job);setInterval(async()=>{if(polling)return;polling=true;try{const job=await call('poll_job');if(job.id)renderJob(job)}catch(error){console.error(error)}finally{polling=false}},450)}catch(error){state.ready=false;$('status-text').textContent='本地引擎连接失败';await showError(error)}}
 buildSettings();renderSource();renderQueue();
 window.addEventListener('pywebviewready',initialize);if(window.pywebview?.api)initialize();
+
 
 
 
