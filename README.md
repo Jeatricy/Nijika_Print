@@ -1,12 +1,12 @@
 # Nijika Print
 
-**1.0.1 · Windows 本地批量打印桌面应用**
+**1.0.2 · Windows 本地批量打印桌面应用**
 
 基于 WebView2 的独立桌面窗口。文件在本机处理，不需要打开网站。
 
 ## 下载与运行
 
-从 GitHub Releases 下载 `Nijika_Print-1.0.1-windows-x64.exe`，双击运行。
+从 GitHub Releases 下载 `Nijika_Print-1.0.2-windows-x64.exe`，双击运行。
 
 - Windows 10/11 x64，需安装 Microsoft Edge WebView2 Runtime。
 - Release 为单文件程序，包含 Python 运行组件和 SumatraPDF 3.6.1；首次启动会解压运行资源到临时目录。
@@ -56,6 +56,7 @@ nijika_print/
   engine.py         独立打印引擎
   branding.py       名称与版本
   resources.py      应用图标资源定位
+  diagnostics.py    隐藏 WebView2 启动诊断（禁止打印）
   web/              随程序提供的界面源码
 packaging/
   version_info.txt  Windows 文件版本元数据
@@ -72,9 +73,9 @@ $env:NIJIKA_SUMATRA_BUILD_PATH = 'C:\Program Files\SumatraPDF\SumatraPDF.exe'
 python -m PyInstaller --noconfirm Nijika_Print.spec
 ```
 
-产物：`dist/Nijika_Print-1.0.1-windows-x64.exe`。
+产物：`dist/Nijika_Print-1.0.2-windows-x64.exe`。
 
-可在不创建窗口、不提交打印的情况下运行依赖和 PDF 拼版诊断：
+可在不显示应用窗口、不提交打印的情况下运行依赖、PDF 拼版和真实 WebView2 前端启动诊断：
 
 ```powershell
 python -m nijika_print --diagnose "$env:TEMP\nijika-diagnostics.json"
@@ -84,7 +85,8 @@ python -m nijika_print --diagnose "$env:TEMP\nijika-diagnostics.json"
 
 ## 版本与第三方组件
 
-1.0.1 是图标修正版，统一使用根目录 `icon.ico`，其余界面和打印功能保持不变。详见 `CHANGELOG.md` 和 `THIRD_PARTY_NOTICES.md`。
+1.0.2 修复了 1.0.1 的 `app is not defined` 启动错误。仍使用根目录 `icon.ico`，打印逻辑和紧凑布局保持不变。详见 `CHANGELOG.md` 和 `THIRD_PARTY_NOTICES.md`。
 
 本仓库为公开仓库，未额外指定项目代码的开源许可。第三方组件保留其各自许可及权利声明。
+
 

@@ -66,7 +66,7 @@ def run():
 
 
 def diagnose(output):
-    """Non-interactive support check. Never creates a window or sends a print job."""
+    """Check dependencies and real frontend startup without showing a window or printing."""
     from .engine import PrintEngine
     from . import engine as printing
     core = PrintEngine()
@@ -98,6 +98,10 @@ def diagnose(output):
     except Exception as exc:
         result["webview_error"] = str(exc)
     result["ok"] = result["app_icon"] and result["webview_backend"] and result["win32"] and result["pdf"] and result["web_assets"] and result["pdf_nup"] and not result["tk_loaded"]
+    if result["ok"]:
+        from .diagnostics import frontend_startup_check
+        result["frontend"] = frontend_startup_check(WEB_ROOT)
+        result["ok"] = result["ok"] and result["frontend"]["ok"]
     Path(output).write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     return 0 if result["ok"] else 1
 
@@ -115,5 +119,6 @@ def main():
         if sys.platform == "win32":
             ctypes.windll.user32.MessageBoxW(None, f"无法启动 {APP_NAME} {APP_VERSION}。请检查 WebView2 运行时和应用依赖。\n\n错误详情：{log}", f"{APP_NAME} · 启动失败", 0x10)
         raise
+
 
 

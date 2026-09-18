@@ -42,11 +42,12 @@ a = Analysis(
 pyz = PYZ(a.pure)
 exe = EXE(
     pyz, a.scripts, a.binaries, a.datas, [],
-    name="Nijika_Print-1.0.1-windows-x64",
+    name="Nijika_Print-1.0.2-windows-x64",
     debug=False, bootloader_ignore_signals=False,
     strip=False, upx=False, console=False,
     disable_windowed_traceback=False,
     icon=str(icon),
     version=str(ROOT / "packaging" / "version_info.txt"),
 )
+
 
